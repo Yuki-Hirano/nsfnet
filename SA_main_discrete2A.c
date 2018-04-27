@@ -37,7 +37,7 @@ int main(int argc,char *argv[]){
 	//double T_initial=atof(argv[3]);
 	int LIMIT1=atof(argv[3]);
 	int LIMIT2=atof(argv[4]);
-	double rho=0.99;
+	double rho=atof(argv[5]);
         int loop;
         int route[N];
         int temp_route[N];
