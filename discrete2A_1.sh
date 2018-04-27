@@ -1,9 +1,8 @@
 #!/bin/sh
 
 
-for itr in 15000;do
-	 for seed in 40000 50000;do
+for rho in 0.9 0.99 0.999 0.9999;do
+    
+		      gcc -Wall SA_main_discrete2A.c -lm;./a.out 0.075 0.05 30000 20000 $rho
 
-		      gcc -Wall SA_main_discrete2A.c -lm;./a.out 0.075 0.05 $seed $itr
-	 done
 done
