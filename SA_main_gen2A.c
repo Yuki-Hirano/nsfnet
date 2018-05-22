@@ -51,7 +51,7 @@ int main(int argc, char *argv[]){
   // int cap_list[]={25,50,75,100,150};
   // int p_link[N][N];
   int cnt[N][N];
-  // double flag1,flag2,flag3,flag4;
+  //double flag1,flag2,flag3,flag4,flag5;
   
   /*
   int result_path[N][N][N];
@@ -60,11 +60,11 @@ int main(int argc, char *argv[]){
   //double normal;
   srand(K);
   srand48(SEED);
-  
-  // for(i=0;i<N;i++){
-  //for(j=0;j<N;j++){
-  //  cnt[i][j]=0;
-      /*
+  /*  
+  for(i=0;i<N;i++){
+    for(j=0;j<N;j++){
+      cnt[i][j]=0;
+      
       if(i==j){
 	p_link[i][j]=0;
       }else{
@@ -80,14 +80,14 @@ int main(int argc, char *argv[]){
 	
 	p_link[i][j]=cap_list[rand_K(K)];
       }
-    */
+    
       // printf("%d&",p_link[i][j]);
-  //}
+    }
     // printf("\n");
-    //}
+    }
+  */
   
-  
-  /*
+
   //MODELA
     int p_link[N][N]={
       {0,1,1,1,0,0,0,0,0,0,0,0,0,0},
@@ -105,8 +105,8 @@ int main(int argc, char *argv[]){
       {0,0,0,0,0,0,1,0,0,0,0,10,0,10},
       {0,0,0,0,0,0,0,0,10,0,10,0,10,0},
     };
-  */
-   
+  
+    /*
    //MODELB
     int p_link[N][N]={
      {0,10,1,10,0,0,0,0,0,0,0,0,0,0},
@@ -125,7 +125,7 @@ int main(int argc, char *argv[]){
       {0,0,0,0,0,0,0,0,1,0,1,0,10,0},
     };
   
-
+*/
 
   /*
     for(i=0;i<N;i++){
@@ -139,7 +139,7 @@ int main(int argc, char *argv[]){
   //FILE *fp1;
   //FILE *fp2;
     //start=time(NULL);
-   //flag1=clock();
+   
   for(q=0;q<LIMIT1;q++){
     // srand(9999);
     start=clock();
@@ -151,7 +151,6 @@ int main(int argc, char *argv[]){
     
     for(i=0;i<N;i++){
       for(j=0;j<N;j++){
-	//link[i][j]=0;
 	cnt[i][j]=0;
 	//backup_temp[i][j]=0;
 	for(a=0;a<N*N-N;a++){
@@ -169,10 +168,12 @@ int main(int argc, char *argv[]){
       }
     }
 
-
+    //flag4=clock();
       set_G(PROBABILITY,EPSILON,G);
-      
-    for(i=0;i<N;i++){
+      //flag5=clock();
+      //printf("set_G所要時間・・・%f\n",(flag5-flag4)/CLOCKS_PER_SEC);
+     
+     for(i=0;i<N;i++){
       for(j=0;j<N;j++){
 	
 	if(i!=j){
@@ -193,12 +194,13 @@ int main(int argc, char *argv[]){
 	}
       }
     }
-    /*
-    flag2=clock();
-    printf("初期ルーティング...%f\n",(flag2-flag1)/CLOCKS_PER_SEC);
-    */   
+    
+   
+     // printf("初期ルーティング...%f\n",(flag2-flag4)/CLOCKS_PER_SEC);
+       
     for(i=0;i<N;i++){
       for(j=0;j<N;j++){
+	//descend_sort(gamma[i][j],N*N-N);
 	descend_sort(gamma[i][j],cnt[i][j]);
       }
     }
@@ -219,18 +221,19 @@ int main(int argc, char *argv[]){
       //printf("\n");
     }
     
-    /*
-    flag3=clock();
-    printf("初期容量算出...%f\n",(flag3-flag2)/CLOCKS_PER_SEC);
-    */
+    
+    // flag3=clock();
+    // printf("初期容量算出...%f\n",(flag3-flag1)/CLOCKS_PER_SEC);
+    
     //printf("initial CB_total = %d\n",cb_total);
     
-    
+        
     for(loop=0;loop<LIMIT2;loop++){
-
+      //flag2=clock();
       cb_min_temp=INF;      
       cb_prime_total=0;
-      
+
+      //元あった経路情報PATHをfixedtempにコピー
       for(i=0;i<N;i++){
 	for(j=0;j<N;j++){
 	  //backup_temp[i][j]=0;
@@ -239,19 +242,21 @@ int main(int argc, char *argv[]){
 	  }
 	}
       }
-      
+      //初ノード着ノードをランダムに決定
       src=rand()%N;
       dst=rand()%N;
       while(dst==src){
 	dst=rand()%N;
       }
       //printf("s=%d,d=%d,  ",src,dst);
-      
+
+      //ルーティング結果をtemp_routeに格納
       RandomSerch(src,dst,temp_route);
       
       while(same_ch(temp_route,fixedtemp[src][dst])){
 	RandomSerch(src,dst,temp_route);
       }
+
       
       for(a=0;a<N;a++){
 	fixedtemp[src][dst][a]=temp_route[a];
@@ -259,7 +264,7 @@ int main(int argc, char *argv[]){
       
       for(i=0;i<N;i++){
 	for(j=0;j<N;j++){
-	  //link[i][j]=0;
+	  // link[i][j]=0;
 	  cnt[i][j]=0;
 	  for(a=0;a<N*N-N;a++){
 	    gamma[i][j][a]=0;
@@ -342,6 +347,7 @@ int main(int argc, char *argv[]){
 
       for(i=0;i<N;i++){
 	for(j=0;j<N;j++){
+	  // descend_sort(gamma[i][j],N*N-N);
 	  descend_sort(gamma[i][j],cnt[i][j]);
 	}
       }
@@ -416,10 +422,10 @@ int main(int argc, char *argv[]){
       */
       //printf("CB_total=%d\n",cb_total);
       T=T*rho;
-      /*
-      flag4=clock();
-      printf("ループ終了...%f\n",(flag4-flag3)/CLOCKS_PER_SEC);
-      */
+      
+      //flag4=clock();
+      //printf("１ループあたり所要時間...%f\n",(flag4-flag2)/CLOCKS_PER_SEC);
+      
     }
     
     /*
@@ -450,6 +456,7 @@ vvvvv	return -1;
     }
     
     end=clock();
+    //printf("１シードあたり所要時間・・・%f\n",(flag5-flag1)/CLOCKS_PER_SEC); 
     time+=(end-start)/CLOCKS_PER_SEC;
   }
   
@@ -469,6 +476,6 @@ vvvvv	return -1;
       }
     }
   */
-  printf("B,%f,%f,%f,%f,%d,%f\n",T_initial,rho,PROBABILITY,EPSILON,cb_min,time);
+  printf("A,%f,%f,%f,%f,%d,%f\n",T_initial,rho,PROBABILITY,EPSILON,cb_min,time);
   return 0;
   }
