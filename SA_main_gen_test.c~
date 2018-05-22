@@ -1,0 +1,478 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <time.h>
+#include "SA_head2.h"
+#include "SA_set_G2.h"
+#define N 14
+#define INF 10000
+#define LIMIT1 10000
+#define LIMIT2 1000
+//#define T_initial 70
+//#define rho 0.99
+#define SEED 2
+#define SIGMA 0.05
+#define MU 0.5
+#define K 2
+
+double rand_normal( double mu, double sigma ){
+  double z=sqrt( -2.0*log(drand48()) ) * sin( 2.0*M_PI*drand48() );
+  return mu + sigma*z;
+}
+
+
+
+int main(int argc, char *argv[]){
+  double PROBABILITY=atof(argv[1]);
+  double EPSILON=atof(argv[2]);
+  //int model=atof(argv[3]);
+  double T;
+  double T_initial=atof(argv[3]);
+  double rho=atof(argv[4]);
+  int loop;
+  int route[N];
+  int temp_route[N];
+  int i,j,a,b;
+  int q;
+  int G[N*N-N];
+  //int link[N][N];
+  int gamma[N][N][N*N-N];
+  //int backup1[N][N];
+  //  int backup2[N][N];
+  // int backup_temp[N][N];
+  int PATH[N][N][N];
+  int fixedtemp[N][N][N];
+  int cb_total=0;
+  int cb_prime_total=0;
+  int src,dst;
+  int cb_min=INF;
+  int cb_min_temp=INF;
+  int start,end;
+  // int cap_list[]={25,50,75,100,150};
+  // int p_link[N][N];
+  int cnt[N][N];
+  double flag1,flag2,flag3,flag4,flag5;
+  
+  /*
+  int result_path[N][N][N];
+  int optimal_path[N][N][N];
+  */
+  //double normal;
+  srand(K);
+  srand48(SEED);
+  /*  
+  for(i=0;i<N;i++){
+    for(j=0;j<N;j++){
+      cnt[i][j]=0;
+      
+      if(i==j){
+	p_link[i][j]=0;
+      }else{
+	
+	normal=rand_normal(MU,SIGMA);
+	while(normal<0){
+	  normal=rand_normal(MU,SIGMA);
+	}
+	p_link[i][j]=(int)(normal*100);
+	
+	p_link[i][j]=(int)(drand48()*100);
+	p_link[i][j]=1;
+	
+	p_link[i][j]=cap_list[rand_K(K)];
+      }
+    
+      // printf("%d&",p_link[i][j]);
+    }
+    // printf("\n");
+    }
+  */
+  
+
+  //MODELA
+    int p_link[N][N]={
+      {0,1,1,1,0,0,0,0,0,0,0,0,0,0},
+      {1,0,1,0,0,0,0,1,0,0,0,0,0,0},
+      {1,1,0,0,0,0,1,0,0,0,0,0,0,0},
+      {1,0,0,0,1,0,0,0,1,0,0,0,0,0},
+      {0,0,0,1,0,1,1,0,0,0,0,0,0,0},
+      {0,0,0,0,1,0,0,1,0,0,0,0,0,0},
+      {0,0,1,0,1,0,0,0,0,1,0,0,1,0},
+      {0,1,0,0,0,1,0,0,0,0,1,0,0,0},
+      {0,0,0,1,0,0,0,0,0,0,0,10,0,10},
+      {0,0,0,0,0,0,1,0,0,0,10,0,0,0},
+      {0,0,0,0,0,0,0,1,0,10,0,10,0,10},
+      {0,0,0,0,0,0,0,0,10,0,10,0,10,0},
+      {0,0,0,0,0,0,1,0,0,0,0,10,0,10},
+      {0,0,0,0,0,0,0,0,10,0,10,0,10,0},
+    };
+  
+    /*
+   //MODELB
+    int p_link[N][N]={
+     {0,10,1,10,0,0,0,0,0,0,0,0,0,0},
+      {1,0,1,0,0,0,0,1,0,0,0,0,0,0},
+      {1,10,0,0,0,0,1,0,0,0,0,0,0,0},
+      {1,0,0,0,1,0,0,0,10,0,0,0,0,0},
+      {0,0,0,10,0,1,10,0,0,0,0,0,0,0},
+      {0,0,0,0,1,0,0,1,0,0,0,0,0,0},
+      {0,0,1,0,1,0,0,0,0,1,0,0,10,0},
+      {0,10,0,0,0,10,0,0,0,0,1,0,0,0},
+      {0,0,0,1,0,0,0,0,0,0,0,1,0,10},
+      {0,0,0,0,0,0,1,0,0,0,1,0,0,0},
+      {0,0,0,0,0,0,0,10,0,10,0,1,0,10},
+      {0,0,0,0,0,0,0,0,1,0,1,0,1,0},
+      {0,0,0,0,0,0,1,0,0,0,0,1,0,1},
+      {0,0,0,0,0,0,0,0,1,0,1,0,10,0},
+    };
+  
+*/
+
+  /*
+    for(i=0;i<N;i++){
+      for(j=0;j<N;j++){
+	backup1[i][j]=0;
+	backup2[i][j]=0;
+      
+      }
+    }
+  */
+  //FILE *fp1;
+  //FILE *fp2;
+   start=time(NULL);
+   
+  for(q=0;q<LIMIT1;q++){
+    // srand(9999);
+    flag1=clock();
+    srand(q);
+    T=T_initial;
+    cb_total=0;
+    
+    
+    
+    for(i=0;i<N;i++){
+      for(j=0;j<N;j++){
+	cnt[i][j]=0;
+	//backup_temp[i][j]=0;
+	for(a=0;a<N*N-N;a++){
+	  gamma[i][j][a]=0;
+	}
+      }
+    }
+    
+    for(i=0;i<N;i++){
+      for(j=0;j<N;j++){
+	for(a=0;a<N;a++){
+	  PATH[i][j][a]=INF;
+	  fixedtemp[i][j][a]=INF;
+	}
+      }
+    }
+
+    //flag4=clock();
+      set_G(PROBABILITY,EPSILON,G);
+      //flag5=clock();
+      //printf("set_G所要時間・・・%f\n",(flag5-flag4)/CLOCKS_PER_SEC);
+     
+     for(i=0;i<N;i++){
+      for(j=0;j<N;j++){
+	
+	if(i!=j){
+	  RandomSerch(i,j,route);
+	  
+	  for(b=0;b<N;b++){
+	    PATH[i][j][b]=route[b];
+	  }
+	  
+	  
+	  for(a=0;a<N-1;a++){
+	    if(route[a]!=INF){
+	      //link[route[a]][route[a+1]]++;
+	      gamma[route[a]][route[a+1]][cnt[route[a]][route[a+1]]]=p_link[i][j];
+	      cnt[route[a]][route[a+1]]++;
+	    }
+	  }
+	}
+      }
+    }
+    
+   
+     // printf("初期ルーティング...%f\n",(flag2-flag4)/CLOCKS_PER_SEC);
+       
+    for(i=0;i<N;i++){
+      for(j=0;j<N;j++){
+	descend_sort(gamma[i][j],N*N-N);
+      }
+    }
+   
+    
+
+     
+    for(i=0;i<N;i++){
+      for(j=0;j<N;j++){
+	//a=G[link[i][j]];
+	a=G[cnt[i][j]];
+	//printf("%d",gamma[i][j]);
+	for(b=0;b<a;b++){
+	  //backup_temp[i][j]+=gamma[i][j][b];
+	  cb_total=cb_total+gamma[i][j][b];
+	}
+      }
+      //printf("\n");
+    }
+    
+    
+     flag3=clock();
+    printf("初期容量算出...%f\n",(flag3-flag1)/CLOCKS_PER_SEC);
+    
+    //printf("initial CB_total = %d\n",cb_total);
+    
+        
+    for(loop=0;loop<LIMIT2;loop++){
+      flag2=clock();
+      cb_min_temp=INF;      
+      cb_prime_total=0;
+
+      //元あった経路情報PATHをfixedtempにコピー
+      for(i=0;i<N;i++){
+	for(j=0;j<N;j++){
+	  //backup_temp[i][j]=0;
+	  for(a=0;a<N;a++){
+	    fixedtemp[i][j][a]=PATH[i][j][a];
+	  }
+	}
+      }
+      //初ノード着ノードをランダムに決定
+      src=rand()%N;
+      dst=rand()%N;
+      while(dst==src){
+	dst=rand()%N;
+      }
+      //printf("s=%d,d=%d,  ",src,dst);
+
+      //ルーティング結果をtemp_routeに格納
+      RandomSerch(src,dst,temp_route);
+      
+      while(same_ch(temp_route,fixedtemp[src][dst])){
+	RandomSerch(src,dst,temp_route);
+      }
+
+      
+      for(a=0;a<N;a++){
+	fixedtemp[src][dst][a]=temp_route[a];
+      }
+      
+      for(i=0;i<N;i++){
+	for(j=0;j<N;j++){
+	  // link[i][j]=0;
+	  cnt[i][j]=0;
+	  for(a=0;a<N*N-N;a++){
+	    gamma[i][j][a]=0;
+	  }
+	}
+      }
+      
+      //提案手法の経路
+      /*
+            int fixedtemp[N][N][N]=
+	      {
+		{{INF,INF,INF,INF,INF},
+		 {INF,INF,INF,0,1},
+		 {INF,INF,0,3,2},
+		 {INF,INF,INF,0,3},
+		 {INF,INF,0,1,4}},
+
+		{{INF,INF,1,3,0},
+		 {INF,INF,INF,INF,INF},
+		 {INF,INF,1,3,2},
+		 {INF,INF,INF,1,3},
+		 {INF,INF,INF,1,4}},
+
+		{{INF,INF,INF,2,0},
+		 {INF,INF,INF,2,1},
+		 {INF,INF,INF,INF,INF},
+		 {INF,INF,2,0,3},
+		 {INF,INF,2,1,4}},
+
+		{{INF,INF,INF,3,0},
+		 {INF,INF,3,0,1},
+		 {INF,INF,3,4,2},
+		 {INF,INF,INF,INF,INF},
+		 {INF,INF,INF,3,4}},
+
+		{{INF,INF,INF,4,0},
+		 {INF,INF,4,2,1},
+		 {INF,INF,INF,4,2},
+		 {INF,INF,4,0,3},
+		 {INF,INF,INF,INF,INF}}
+	      };
+*/	    
+      
+      for(i=0;i<N;i++){
+	for(j=0;j<N;j++){
+	  if(i!=j){
+	    for(b=0;b<N;b++){
+	      temp_route[b]=fixedtemp[i][j][b];
+	      //	            printf("%d,",temp_route[b]);
+	    }
+	    
+	    
+	    for(a=0;a<N-1;a++){
+	      if(temp_route[a]!=INF){
+		//link[temp_route[a]][temp_route[a+1]]++;
+		gamma[temp_route[a]][temp_route[a+1]][cnt[temp_route[a]][temp_route[a+1]]]=p_link[i][j];
+		cnt[temp_route[a]][temp_route[a+1]]++;
+	      }
+	    }
+	  }
+	  //printf("\n");
+	}
+      }
+            
+      //経路情報
+      /*
+      for(i=0;i<N;i++){
+	for(j=0;j<N;j++){
+	  printf("(%d,%d)---",i,j);
+	  for(a=0;a<N;a++){
+	    if(fixedtemp[i][j][a]!=INF){
+	    printf("%d ,",fixedtemp[i][j][a]);
+	    }
+	  }
+	  printf("\n");
+	}
+      }
+      printf("\n");
+      */
+
+      for(i=0;i<N;i++){
+	for(j=0;j<N;j++){
+	  descend_sort(gamma[i][j],N*N-N);
+	}
+      }
+      
+      /*
+      printf("gamma\n");
+      for(i=0;i<N;i++){
+	for(j=0;j<N;j++){
+	  printf("(%d,%d)・・・",i,j);
+	  for(a=0;a<10;a++){
+	    printf("%d,",gamma[i][j][a]);
+	  }
+	  printf("\n");
+	}
+      }
+      */
+
+ 
+      
+      
+      
+      for(i=0;i<N;i++){
+	for(j=0;j<N;j++){
+	  //a=G[link[i][j]];
+	  a=G[cnt[i][j]];
+	  for(b=0;b<a;b++){
+	    // printf("gamma[%d][%d]=%d\n",i,j,gamma[i][j][b]);
+	    //backup_temp[i][j]+=gamma[i][j][b];
+	    cb_prime_total=cb_prime_total+gamma[i][j][b];
+	    //printf("sum=%d\n",cb_prime_total);
+	  }
+	}
+      }
+
+      
+      //printf("cb_prime_total=%d\n  ",cb_prime_total);
+      //Simulated Annealing
+      if((cb_total>cb_prime_total) || ((rand()/(1.0+RAND_MAX))<exp((cb_total-cb_prime_total)/T))){
+	//if(cb_total>cb_prime_total){
+	cb_total=cb_prime_total;
+	for(i=0;i<N;i++){
+	  for(j=0;j<N;j++){
+	    //backup1[i][j]=backup_temp[i][j];
+	    for(a=0;a<N;a++){
+	      PATH[i][j][a]=fixedtemp[i][j][a];
+	    }
+	  }
+	}
+      }
+      
+      if(cb_total<cb_min_temp){
+	cb_min_temp=cb_prime_total;
+      }
+      
+      
+      /*
+      if(loop==0){
+	if((fp1=fopen("result_gen.txt","w"))==NULL){
+	  printf("error\n");
+	  return -1;
+	}
+	fprintf(fp1,"%d %d\n",loop,cb_total);
+	fclose(fp1);
+      }else{
+	if((fp1=fopen("result_gen.txt","a"))==NULL){
+	  printf("error\n");
+	  return -1;
+	}
+	fprintf(fp1,"%d %d\n",loop,cb_total);
+	fclose(fp1);
+	}
+      */
+      //printf("CB_total=%d\n",cb_total);
+      T=T*rho;
+      
+      flag4=clock();
+      printf("１ループあたり所要時間...%f\n",(flag4-flag2)/CLOCKS_PER_SEC);
+      
+    }
+    
+    /*
+    if(q==0){
+      if((fp2=fopen("result_gen_1.txt","w"))==NULL){
+	printf("error\n");
+	return -1;
+      }
+      fprintf(fp2,"%d %d\n",q,cb_total);
+      fclose(fp2);
+    }else{
+      if((fp2=fopen("result_gen_1.txt","a"))==NULL){
+	printf("error\n");
+vvvvv	return -1;
+      }
+      fprintf(fp2,"%d %d\n",q,cb_total);
+      fclose(fp2);
+    }
+    */
+    
+    //printf("%d\n",cb_min);
+    
+
+    
+    if(cb_min>cb_min_temp){
+      cb_min=cb_min_temp;
+      // printf("seed=%d  CB_total=%d\n",q,cb_min_temp);
+    }
+    
+    flag5=clock();
+    printf("１シードあたり所要時間・・・%f\n",(flag5-flag1)/CLOCKS_PER_SEC); 
+  }
+  
+
+  end=time(NULL);
+  // printf("minimum CB=%d\n",cb_min);
+  // printf("time %d[s]\n",end-start);
+  /*
+  printf("\n<backup capacity>\n");
+  for(i=0;i<N;i++){
+    for(j=0;j<N;j++){
+      if(i!=j){
+	printf("(%d,%d)・・・",i,j);
+	printf("%d　",backup2[i][j]);
+      }
+      printf("\n");
+      }
+    }
+  */
+  printf("A,%f,%f,%f,%f,%d,%d\n",T_initial,rho,PROBABILITY,EPSILON,cb_min,end-start);
+  return 0;
+  }
