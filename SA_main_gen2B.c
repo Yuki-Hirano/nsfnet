@@ -7,7 +7,7 @@
 #define N 14
 #define INF 10000
 #define LIMIT1 10000
-#define LIMIT2 1000
+//#define LIMIT2 1000
 //#define T_initial 70
 //#define rho 0.99
 #define SEED 2
@@ -27,8 +27,9 @@ int main(int argc, char *argv[]){
   double EPSILON=atof(argv[2]);
   //int model=atof(argv[3]);
   double T;
-  double T_initial=atof(argv[3]);
-  double rho=atof(argv[4]);
+  double T_initial=10000;
+  double rho=atof(argv[3]);
+  int LIMIT2=atof(argv[4]);
   int loop;
   int route[N];
   int temp_route[N];

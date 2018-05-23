@@ -1,8 +1,8 @@
 #!/bin/sh
 
 
-for rho in 0.9 0.99 0.999 0.9999;do
-	
-		      gcc -Wall SA_main_discrete2B.c -lm;./a.out 0.075 0.05 30000 20000 $rho
-       
-done
+    
+gcc -Wall SA_main_discrete2B.c -lm;./a.out 0.075 0.05 0.988 1000;
+gcc -Wall SA_main_discrete2B.c -lm;./a.out 0.075 0.05 0.9975 5000;
+gcc -Wall SA_main_discrete2B.c -lm;./a.out 0.075 0.05 0.9987 10000;
+gcc -Wall SA_main_discrete2B.c -lm;./a.out 0.075 0.05 0.9994 20000;

@@ -51,13 +51,13 @@ int main(int argc,char *argv[]){
         int cb_min=INF;
 	int cb_min_temp=INF;
         int sum;
-        int start,end;
+        double start,end,time=0.0;
         int cnt[N][N];
         int cnt_k[N][N][K];
         int cap_list[K]={1,10};
         int input[K];
         int num[K];
-	double flag1,flag2,flag3,flag4,flag5;
+	//double flag1,flag2,flag3,flag4,flag5;
 	//double flag1,flag2,flag3,flag4;
         //double normal;
 	// printf("At p=%f, epsilon=%f\n",PROBABILITY,EPSILON);
@@ -149,11 +149,11 @@ int main(int argc,char *argv[]){
 
 
         //FILE *fp;
-        start=time(NULL);
-	//flag1=clock();
+        //start=time(NULL);
+    	//flag1=clock();
 
         for(q=0; q<LIMIT1; q++) {
-	  flag1=clock();
+	  start=clock();
                 T=T_initial;
                 srand(q);
 
@@ -310,15 +310,15 @@ int main(int argc,char *argv[]){
                 }
                 cb_total=sum;
 		
-		flag5=clock();
-		printf("初期容量算出...%f\n",(flag5-flag1)/CLOCKS_PER_SEC);
+		//flag5=clock();
+		//printf("初期容量算出...%f\n",(flag5-flag1)/CLOCKS_PER_SEC);
 		
                 //printf("initial CB_total = %d\n",cb_total);
 
 
 
                 for(loop=0; loop<LIMIT2; loop++) {
-		  flag3=clock();
+		  //flag3=clock();
                         for(i=0; i<N; i++) {
                                 for(j=0; j<N; j++) {
                                         for(a=0; a<K; a++) {
@@ -547,8 +547,8 @@ int main(int argc,char *argv[]){
 
                         T=T*rho;
 			
-			flag4=clock();
-			printf("１ループあたり所要時間...%f\n",(flag4-flag3)/CLOCKS_PER_SEC);
+			//flag4=clock();
+			//printf("１ループあたり所要時間...%f\n",(flag4-flag3)/CLOCKS_PER_SEC);
                 }
                 //printf("%d\n",cb_total)
 		/*

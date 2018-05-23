@@ -7,7 +7,7 @@
 #define INF 10000
 //#define LIMIT1 25000
 //#define LIMIT2 5000
-#define T_initial 100
+#define T_initial 10000
 //#define rho 0.99
 #define SEED 2
 //#define PROBABILITY 0.1
@@ -35,9 +35,9 @@ int main(int argc,char *argv[]){
   //int model=atof(argv[3]);
         double T;
 	//double T_initial=atof(argv[3]);
-	int LIMIT1=atof(argv[3]);
+	int LIMIT1=10000;
 	int LIMIT2=atof(argv[4]);
-	double rho=atof(argv[5]);
+	double rho=atof(argv[3]);
         int loop;
         int route[N];
         int temp_route[N];
@@ -51,7 +51,7 @@ int main(int argc,char *argv[]){
         int cb_min=INF;
 	int cb_min_temp=INF;
         int sum;
-        int start,end;
+        double start,end,time=0.0;
         int cnt[N][N];
         int cnt_k[N][N][K];
         int cap_list[K]={1,10};
@@ -148,11 +148,12 @@ int main(int argc,char *argv[]){
 
 
         //FILE *fp;
-        start=time(NULL);
+        //start=time(NULL);
 	//flag1=clock();
 
         for(q=0; q<LIMIT1; q++) {
-                T=T_initial;
+	  start=clock();
+	  T=T_initial;
                 srand(q);
 
                 cb_total=0;
@@ -542,7 +543,9 @@ int main(int argc,char *argv[]){
 
 
                         T=T*rho;
-			/*
+
+		      
+			  /*
 			flag4=clock();
 			printf("ループ終了...%f\n",(flag4-flag3)/CLOCKS_PER_SEC);*/
                 }
@@ -570,9 +573,11 @@ int main(int argc,char *argv[]){
 		  cb_min_temp=cb_min;
 		  // printf("seed=%d, CB=%d\n",q,cb_min_temp);
 		}
+		end=clock();
+		time+=(end-start)/CLOCKS_PER_SEC;
         }
 
-        end=time(NULL);
+        //end=time(NULL);
         //printf("SA  CB_total=%d\n",cb_total);
         //printf("proposal  CB_total=%d\n",cb_total);
 	/*
@@ -585,7 +590,7 @@ int main(int argc,char *argv[]){
 	*/
 	  //printf("minimum CB=%d\n",cb_min);
 	  //printf("time %d[s]\n",end-start);
-	printf("B,%d,0.99,%f,%f,%d,%d,%d,%d\n",T_initial,PROBABILITY,EPSILON,cb_min_temp,LIMIT1,LIMIT2,end-start);
+	printf("B,%d,%f,%f,%d,%d,%d,%f\n",T_initial,PROBABILITY,EPSILON,cb_min_temp,LIMIT1,LIMIT2,time);
 
         return 0;
 }
