@@ -43,11 +43,11 @@ int main(int argc, char *argv[]){
   // int backup_temp[N][N];
   int PATH[N][N][N];
   int fixedtemp[N][N][N];
-  int cb_total=0;
-  int cb_prime_total=0;
+  int cb_total;
+  int cb_prime_total;
   int src,dst;
-  int cb_min=INF;
-  int cb_min_temp=INF;
+  int cb_min;
+  int cb_min_temp;
   double start,end,time=0.0;
   // int cap_list[]={25,50,75,100,150};
   // int p_link[N][N];
@@ -140,13 +140,14 @@ int main(int argc, char *argv[]){
   //FILE *fp1;
   //FILE *fp2;
     //start=time(NULL);
-   
+    cb_min=INF;   
   for(q=0;q<LIMIT1;q++){
     // srand(9999);
     start=clock();
     srand(q);
     T=T_initial;
     cb_total=0;
+    cb_min_temp=INF;
     
     
     
@@ -400,7 +401,7 @@ int main(int argc, char *argv[]){
       }
       
       if(cb_total<cb_min_temp){
-	cb_min_temp=cb_prime_total;
+	cb_min_temp=cb_total;
       }
       
       

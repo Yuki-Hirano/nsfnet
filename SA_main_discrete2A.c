@@ -45,11 +45,11 @@ int main(int argc,char *argv[]){
         int gamma[N][N];
         int PATH[N][N][N];
         int fixedtemp[N][N][N];
-        int cb_total=0;
-        int cb_prime_total=0;
+        int cb_total;
+        int cb_prime_total;
         int src,dst;
-        int cb_min=INF;
-	int cb_min_temp=INF;
+        int cb_min;
+	int cb_min_temp;
         int sum;
         double start,end,time=0.0;
         int cnt[N][N];
@@ -151,14 +151,14 @@ int main(int argc,char *argv[]){
         //FILE *fp;
         //start=time(NULL);
     	//flag1=clock();
-
+	cb_min=INF;
         for(q=0; q<LIMIT1; q++) {
 	  start=clock();
                 T=T_initial;
                 srand(q);
 
                 cb_total=0;
-
+		cb_min_temp=INF;
 
 
                 for(i=0; i<N; i++) {
@@ -319,6 +319,7 @@ int main(int argc,char *argv[]){
 
                 for(loop=0; loop<LIMIT2; loop++) {
 		  //flag3=clock();
+		  cb_prime_total=0;
                         for(i=0; i<N; i++) {
                                 for(j=0; j<N; j++) {
                                         for(a=0; a<K; a++) {
@@ -519,8 +520,8 @@ int main(int argc,char *argv[]){
 
                         }
 
-                        if(cb_total<cb_min) {
-                                cb_min=cb_total;
+                        if(cb_total<cb_min_temp) {
+                                cb_min_temp=cb_total;
                         }
 
 
@@ -570,8 +571,8 @@ int main(int argc,char *argv[]){
 		*/
 
 
-		if(cb_min_temp>cb_min){
-		  cb_min_temp=cb_min;
+		if(cb_min_temp<cb_min){
+		  cb_min=cb_min_temp;
 		  // printf("seed=%d, CB=%d\n",q,cb_min_temp);
 		}
 		//flag2=clock();
@@ -593,7 +594,7 @@ int main(int argc,char *argv[]){
 	*/
 	  //printf("minimum CB=%d\n",cb_min);
 	  //printf("time %d[s]\n",end-start);
-	printf("A,%d,%f,%f,%d,%d,%d,%f\n",T_initial,PROBABILITY,EPSILON,cb_min_temp,LIMIT1,LIMIT2,time);
+	printf("A,%d,%f,%f,%d,%d,%d,%f\n",T_initial,PROBABILITY,EPSILON,cb_min,LIMIT1,LIMIT2,time);
 
         return 0;
 }

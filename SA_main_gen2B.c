@@ -43,11 +43,11 @@ int main(int argc, char *argv[]){
   // int backup_temp[N][N];
   int PATH[N][N][N];
   int fixedtemp[N][N][N];
-  int cb_total=0;
-  int cb_prime_total=0;
+  int cb_total;
+  int cb_prime_total;
   int src,dst;
-  int cb_min=INF;
-  int cb_min_temp=INF;
+  int cb_min;
+  int cb_min_temp;
   double start,end,time=0.0;
   // int cap_list[]={25,50,75,100,150};
   // int p_link[N][N];
@@ -141,13 +141,17 @@ int main(int argc, char *argv[]){
   //FILE *fp2;
     //start=time(NULL);
    //flag1=clock();
+
+
+    
+    cb_min=INF;　//最終の出力
   for(q=0;q<LIMIT1;q++){
     // srand(9999);
     start=clock();
     srand(q);
     T=T_initial;
-    cb_total=0;
-    
+    cb_total=0;//各シード中で変化する容量（悪くなることもある）
+    cb_min_temp=INF;//各シードごとに求まる最小の容量
     
     
     for(i=0;i<N;i++){
@@ -229,8 +233,8 @@ int main(int argc, char *argv[]){
     
     for(loop=0;loop<LIMIT2;loop++){
 
-      cb_min_temp=INF;      
-      cb_prime_total=0;
+      //cb_min_temp=INF;      
+      cb_prime_total=0;//各ルーティンングごとに求まる容量
       
       for(i=0;i<N;i++){
 	for(j=0;j<N;j++){
@@ -379,6 +383,7 @@ int main(int argc, char *argv[]){
 
       
       //printf("cb_prime_total=%d\n  ",cb_prime_total);
+      
       //Simulated Annealing
       if((cb_total>cb_prime_total) || ((rand()/(1.0+RAND_MAX))<exp((cb_total-cb_prime_total)/T))){
 	//if(cb_total>cb_prime_total){
@@ -394,7 +399,7 @@ int main(int argc, char *argv[]){
       }
       
       if(cb_total<cb_min_temp){
-	cb_min_temp=cb_prime_total;
+	cb_min_temp=cb_total;
       }
       
       
