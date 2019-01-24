@@ -300,7 +300,21 @@ int main(int argc,char *argv[]){
                                         }
                                         printf("\n");
 					*/
-                                        gamma[i][j]=define_cap(p_density,EPSILON);
+
+					//fprintf(stderr,"flag\n");
+					//fprintf(stderr,"gamma=%d\n",define_cap(p_density,EPSILON));
+					//バックアップに仮定を適用
+					if(0<define_cap(p_density,EPSILON) && define_cap(p_density,EPSILON)<1){
+					  gamma[i][j]=1;
+					}else if(1<define_cap(p_density,EPSILON) && define_cap(p_density,EPSILON)<10){
+					  gamma[i][j]=10;
+					}else if(define_cap(p_density,EPSILON)>10){
+					  gamma[i][j]=20;
+					}else{
+					  gamma[i][j]=define_cap(p_density,EPSILON);
+					}
+					  
+					  //gamma[i][j]=define_cap(p_density,EPSILON);
                                         sum+=gamma[i][j];
 
                                         free(p_density);
@@ -493,9 +507,18 @@ int main(int argc,char *argv[]){
 
                                                 combine(p_density);
                                                 sort_by_cap(p_density,cnt2);
-
-
-                                                gamma[i][j]=define_cap(p_density,EPSILON);
+					       
+						//バックアップに仮定を適用
+						if(0<define_cap(p_density,EPSILON) && define_cap(p_density,EPSILON)<1){
+						  gamma[i][j]=1;
+						}else if(1<define_cap(p_density,EPSILON) && define_cap(p_density,EPSILON)<10){
+						  gamma[i][j]=10;
+						}else if(define_cap(p_density,EPSILON)>10){
+						  gamma[i][j]=20;
+						}else{
+						  gamma[i][j]=define_cap(p_density,EPSILON);
+						}
+                                                //gamma[i][j]=define_cap(p_density,EPSILON);
                                                 sum+=gamma[i][j];
 
                                                 free(p_density);
@@ -579,8 +602,28 @@ int main(int argc,char *argv[]){
 		//printf("1シードあたり所要時間・・・%f\n",(flag2-flag1)/CLOCKS_PER_SEC);
 		end=clock();
 		time+=(end-start)/CLOCKS_PER_SEC;
+		/*
+		if(q%500==0){
+		  printf("%d  %f\n",cb_min,time);
+		}
+		*/
 	}
-
+	/*
+	for(i=0;i<N;i++){
+	  for(j=0;j<N;j++){
+	    printf("(%d,%d)---",i,j);
+	    if(i!=j){
+	      for(a=0;a<N-1;a++){
+		if(PATH[i][j][a]==INF){
+		  break;
+		}
+		printf("(%d,%d)",PATH[i][j][a],PATH[i][j][a+1]);
+	      }
+	      printf("\n");
+	    }
+	  }
+	}
+	*/
         //end=time(NULL);
         //printf("SA  CB_total=%d\n",cb_total);
         //printf("proposal  CB_total=%d\n",cb_total);

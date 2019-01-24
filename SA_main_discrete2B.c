@@ -299,7 +299,19 @@ int main(int argc,char *argv[]){
                                         }
                                         printf("\n");
 					*/
-                                        gamma[i][j]=define_cap(p_density,EPSILON);
+
+					//バックアップに仮定を適用
+					if(0<define_cap(p_density,EPSILON) && define_cap(p_density,EPSILON)<1){
+					  gamma[i][j]=1;
+					}else if(1<define_cap(p_density,EPSILON) && define_cap(p_density,EPSILON)<10){
+					  gamma[i][j]=10;
+					}else if(define_cap(p_density,EPSILON)>10){
+					  gamma[i][j]=20;
+					}else{
+					  gamma[i][j]=define_cap(p_density,EPSILON);
+					}
+					
+                                        //gamma[i][j]=define_cap(p_density,EPSILON);
                                         sum+=gamma[i][j];
 
                                         free(p_density);
@@ -492,8 +504,18 @@ int main(int argc,char *argv[]){
                                                 combine(p_density);
                                                 sort_by_cap(p_density,cnt2);
 
+						//バックアップに仮定を適用
+						if(0<define_cap(p_density,EPSILON) && define_cap(p_density,EPSILON)<1){
+						  gamma[i][j]=1;
+						}else if(1<define_cap(p_density,EPSILON) && define_cap(p_density,EPSILON)<10){
+						  gamma[i][j]=10;
+						}else if(define_cap(p_density,EPSILON)>10){
+						  gamma[i][j]=20;
+						}else{
+						  gamma[i][j]=define_cap(p_density,EPSILON);
+						}
 
-                                                gamma[i][j]=define_cap(p_density,EPSILON);
+                                                //gamma[i][j]=define_cap(p_density,EPSILON);
                                                 sum+=gamma[i][j];
 
                                                 free(p_density);

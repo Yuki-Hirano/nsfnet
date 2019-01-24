@@ -52,6 +52,7 @@ int main(int argc, char *argv[]){
   // int cap_list[]={25,50,75,100,150};
   // int p_link[N][N];
   int cnt[N][N];
+  int tmp_cap;
   //double flag1,flag2,flag3,flag4,flag5;
   
   /*
@@ -212,13 +213,24 @@ int main(int argc, char *argv[]){
      
     for(i=0;i<N;i++){
       for(j=0;j<N;j++){
+	tmp_cap=0;
 	//a=G[link[i][j]];
 	a=G[cnt[i][j]];
 	//printf("%d",gamma[i][j]);
 	for(b=0;b<a;b++){
 	  //backup_temp[i][j]+=gamma[i][j][b];
-	  cb_total=cb_total+gamma[i][j][b];
+	  tmp_cap+=+gamma[i][j][b];
 	}
+	//バックアップに仮定を適用
+	if(0<tmp_cap && tmp_cap<1){
+	  tmp_cap=1;
+	}else if(1<tmp_cap && tmp_cap<10){
+	  tmp_cap=10;
+	}else if(tmp_cap>10){
+	  tmp_cap=20;
+	}
+	
+	cb_total+=tmp_cap;
       }
       //printf("\n");
     }
@@ -354,7 +366,7 @@ int main(int argc, char *argv[]){
 	}
       }
       
-      /*
+      
       printf("gamma\n");
       for(i=0;i<N;i++){
 	for(j=0;j<N;j++){
@@ -365,7 +377,7 @@ int main(int argc, char *argv[]){
 	  printf("\n");
 	}
       }
-      */
+      
 
  
       
@@ -374,13 +386,25 @@ int main(int argc, char *argv[]){
       for(i=0;i<N;i++){
 	for(j=0;j<N;j++){
 	  //a=G[link[i][j]];
+	  tmp_cap=0;
 	  a=G[cnt[i][j]];
 	  for(b=0;b<a;b++){
 	    // printf("gamma[%d][%d]=%d\n",i,j,gamma[i][j][b]);
 	    //backup_temp[i][j]+=gamma[i][j][b];
-	    cb_prime_total=cb_prime_total+gamma[i][j][b];
+	    tmp_cap+=gamma[i][j][b];
 	    //printf("sum=%d\n",cb_prime_total);
 	  }
+	  /*	  
+	  //バックアップに仮定を適用
+	  if(0<tmp_cap && tmp_cap<1){
+	    tmp_cap=1;
+	  }else if(1<tmp_cap && tmp_cap<10){
+	    tmp_cap=10;
+	  }else if(tmp_cap>10){
+	    tmp_cap=20;
+	  }
+	  */
+	  cb_prime_total+=tmp_cap;
 	}
       }
 
@@ -449,7 +473,6 @@ vvvvv	return -1;
     */
     
     //printf("%d\n",cb_min);
-    
 
     
     if(cb_min>cb_min_temp){
@@ -460,6 +483,11 @@ vvvvv	return -1;
     end=clock();
     //printf("１シードあたり所要時間・・・%f\n",(flag5-flag1)/CLOCKS_PER_SEC); 
     time+=(end-start)/CLOCKS_PER_SEC;
+    /*
+    if(q%500==0){
+      printf("%d %f\n",cb_min,time);
+    }
+    */
   }
   
 

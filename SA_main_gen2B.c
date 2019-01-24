@@ -52,6 +52,7 @@ int main(int argc, char *argv[]){
   // int cap_list[]={25,50,75,100,150};
   // int p_link[N][N];
   int cnt[N][N];
+  int tmp_cap;
   // double flag1,flag2,flag3,flag4;
   
   /*
@@ -144,7 +145,7 @@ int main(int argc, char *argv[]){
 
 
     
-    cb_min=INF;　//最終の出力
+    cb_min=INF; //最終の出力
   for(q=0;q<LIMIT1;q++){
     // srand(9999);
     start=clock();
@@ -213,13 +214,25 @@ int main(int argc, char *argv[]){
      
     for(i=0;i<N;i++){
       for(j=0;j<N;j++){
+	tmp_cap=0;
 	//a=G[link[i][j]];
 	a=G[cnt[i][j]];
 	//printf("%d",gamma[i][j]);
 	for(b=0;b<a;b++){
 	  //backup_temp[i][j]+=gamma[i][j][b];
-	  cb_total=cb_total+gamma[i][j][b];
+	  tmp_cap+=gamma[i][j][b];
 	}
+
+	//バックアップに仮定を適用
+	if(0<tmp_cap && tmp_cap<1){
+	  tmp_cap=1;
+	}else if(1<tmp_cap && tmp_cap<10){
+	  tmp_cap=10;
+	}else if(tmp_cap>10){
+	  tmp_cap=20;
+	}
+
+	cb_total+=tmp_cap;
       }
       //printf("\n");
     }
@@ -370,14 +383,26 @@ int main(int argc, char *argv[]){
       
       for(i=0;i<N;i++){
 	for(j=0;j<N;j++){
+	  tmp_cap=0;
 	  //a=G[link[i][j]];
 	  a=G[cnt[i][j]];
 	  for(b=0;b<a;b++){
 	    // printf("gamma[%d][%d]=%d\n",i,j,gamma[i][j][b]);
 	    //backup_temp[i][j]+=gamma[i][j][b];
-	    cb_prime_total=cb_prime_total+gamma[i][j][b];
+	    tmp_cap+=gamma[i][j][b];
 	    //printf("sum=%d\n",cb_prime_total);
 	  }
+
+	  //バックアップに仮定を適用
+	  if(0<tmp_cap && tmp_cap<1){
+	    tmp_cap=1;
+	  }else if(1<tmp_cap && tmp_cap<10){
+	    tmp_cap=10;
+	  }else if(tmp_cap>10){
+	    tmp_cap=20;
+	  }
+	  
+	  cb_prime_total+=tmp_cap;
 	}
       }
 
