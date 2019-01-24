@@ -50,7 +50,7 @@ int main(int argc, char *argv[]){
   // int p_link[N][N];
   int cnt[N][N];
   // double flag1,flag2,flag3,flag4;
-  
+
   /*
   int result_path[N][N][N];
   int optimal_path[N][N][N];
@@ -58,7 +58,7 @@ int main(int argc, char *argv[]){
   //double normal;
   srand(K);
   srand48(SEED);
-  
+
   for(i=0;i<N;i++){
     for(j=0;j<N;j++){
       cnt[i][j]=0;
@@ -66,16 +66,16 @@ int main(int argc, char *argv[]){
       if(i==j){
 	p_link[i][j]=0;
       }else{
-	
+
 	normal=rand_normal(MU,SIGMA);
 	while(normal<0){
 	  normal=rand_normal(MU,SIGMA);
 	}
 	p_link[i][j]=(int)(normal*100);
-	
+
 	p_link[i][j]=(int)(drand48()*100);
 	p_link[i][j]=1;
-	
+
 	p_link[i][j]=cap_list[rand_K(K)];
       }
     */
@@ -83,8 +83,8 @@ int main(int argc, char *argv[]){
     }
     // printf("\n");
     }
-  
-  
+
+
   /*
   //MODELA
     int p_link[N][N]={
@@ -104,7 +104,7 @@ int main(int argc, char *argv[]){
       {0,0,0,0,0,0,0,0,10,0,10,0,10,0},
     };
   */
-   
+
    //MODELB
     int p_link[N][N]={
      {0,10,1,10,0,0,0,0,0,0,0,0,0,0},
@@ -122,7 +122,7 @@ int main(int argc, char *argv[]){
       {0,0,0,0,0,0,1,0,0,0,0,1,0,1},
       {0,0,0,0,0,0,0,0,1,0,1,0,10,0},
     };
-  
+
 
 
   /*
@@ -130,7 +130,7 @@ int main(int argc, char *argv[]){
       for(j=0;j<N;j++){
 	backup1[i][j]=0;
 	backup2[i][j]=0;
-      
+
       }
     }
   */
@@ -143,9 +143,9 @@ int main(int argc, char *argv[]){
     srand(q);
     T=T_initial;
     cb_total=0;
-    
-    
-    
+
+
+
     for(i=0;i<N;i++){
       for(j=0;j<N;j++){
 	link[i][j]=0;
@@ -155,7 +155,7 @@ int main(int argc, char *argv[]){
 	}
       }
     }
-    
+
     for(i=0;i<N;i++){
       for(j=0;j<N;j++){
 	for(a=0;a<N;a++){
@@ -167,18 +167,18 @@ int main(int argc, char *argv[]){
 
 
       set_G(PROBABILITY,EPSILON,G);
-      
+
     for(i=0;i<N;i++){
       for(j=0;j<N;j++){
-	
-	if(i!=j){
+
+	if(p_link[i][j]!=0){
 	  RandomSerch(i,j,route);
-	  
+
 	  for(b=0;b<N;b++){
 	    PATH[i][j][b]=route[b];
 	  }
-	  
-	  
+
+
 	  for(a=0;a<N-1;a++){
 	    if(route[a]!=INF){
 	      link[route[a]][route[a+1]]++;
@@ -192,16 +192,16 @@ int main(int argc, char *argv[]){
     /*
     flag2=clock();
     printf("初期ルーティング...%f\n",(flag2-flag1)/CLOCKS_PER_SEC);
-    */   
+    */
     for(i=0;i<N;i++){
       for(j=0;j<N;j++){
 	descend_sort(gamma[i][j],N*N-N);
       }
     }
-   
-    
 
-     
+
+
+
     for(i=0;i<N;i++){
       for(j=0;j<N;j++){
 	a=G[link[i][j]];
@@ -213,19 +213,19 @@ int main(int argc, char *argv[]){
       }
       //printf("\n");
     }
-    
+
     /*
     flag3=clock();
     printf("初期容量算出...%f\n",(flag3-flag2)/CLOCKS_PER_SEC);
     */
     //printf("initial CB_total = %d\n",cb_total);
-    
-    
+
+
     for(loop=0;loop<LIMIT2;loop++){
 
-      cb_min_temp=INF;      
+      cb_min_temp=INF;
       cb_prime_total=0;
-      
+
       for(i=0;i<N;i++){
 	for(j=0;j<N;j++){
 	  //backup_temp[i][j]=0;
@@ -234,24 +234,24 @@ int main(int argc, char *argv[]){
 	  }
 	}
       }
-      
+
       src=rand()%N;
       dst=rand()%N;
-      while(dst==src){
+      while(dst==src || p_link[i][j]==0){
 	dst=rand()%N;
       }
       //printf("s=%d,d=%d,  ",src,dst);
-      
+
       RandomSerch(src,dst,temp_route);
-      
+
       while(same_ch(temp_route,fixedtemp[src][dst])){
 	RandomSerch(src,dst,temp_route);
       }
-      
+
       for(a=0;a<N;a++){
 	fixedtemp[src][dst][a]=temp_route[a];
       }
-      
+
       for(i=0;i<N;i++){
 	for(j=0;j<N;j++){
 	  link[i][j]=0;
@@ -261,7 +261,7 @@ int main(int argc, char *argv[]){
 	  }
 	}
       }
-      
+
       //提案手法の経路
       /*
             int fixedtemp[N][N][N]=
@@ -296,17 +296,17 @@ int main(int argc, char *argv[]){
 		 {INF,INF,4,0,3},
 		 {INF,INF,INF,INF,INF}}
 	      };
-*/	    
-      
+*/
+
       for(i=0;i<N;i++){
 	for(j=0;j<N;j++){
-	  if(i!=j){
+	  if(p_link[i][j]!=0){
 	    for(b=0;b<N;b++){
 	      temp_route[b]=fixedtemp[i][j][b];
 	      //	            printf("%d,",temp_route[b]);
 	    }
-	    
-	    
+
+
 	    for(a=0;a<N-1;a++){
 	      if(temp_route[a]!=INF){
 		link[temp_route[a]][temp_route[a+1]]++;
@@ -318,7 +318,7 @@ int main(int argc, char *argv[]){
 	  //printf("\n");
 	}
       }
-            
+
       //経路情報
       /*
       for(i=0;i<N;i++){
@@ -340,7 +340,7 @@ int main(int argc, char *argv[]){
 	  descend_sort(gamma[i][j],N*N-N);
 	}
       }
-      
+
       /*
       printf("gamma\n");
       for(i=0;i<N;i++){
@@ -354,10 +354,10 @@ int main(int argc, char *argv[]){
       }
       */
 
- 
-      
-      
-      
+
+
+
+
       for(i=0;i<N;i++){
 	for(j=0;j<N;j++){
 	  a=G[link[i][j]];
@@ -370,7 +370,7 @@ int main(int argc, char *argv[]){
 	}
       }
 
-      
+
       //printf("cb_prime_total=%d\n  ",cb_prime_total);
       //Simulated Annealing
       if((cb_total>cb_prime_total) || ((rand()/(1.0+RAND_MAX))<exp((cb_total-cb_prime_total)/T))){
@@ -385,12 +385,12 @@ int main(int argc, char *argv[]){
 	  }
 	}
       }
-      
+
       if(cb_total<cb_min_temp){
 	cb_min_temp=cb_prime_total;
       }
-      
-      
+
+
       /*
       if(loop==0){
 	if((fp1=fopen("result_gen.txt","w"))==NULL){
@@ -415,7 +415,7 @@ int main(int argc, char *argv[]){
       printf("ループ終了...%f\n",(flag4-flag3)/CLOCKS_PER_SEC);
       */
     }
-    
+
     /*
     if(q==0){
       if((fp2=fopen("result_gen_1.txt","w"))==NULL){
@@ -433,19 +433,19 @@ vvvvv	return -1;
       fclose(fp2);
     }
     */
-    
-    //printf("%d\n",cb_min);
-    
 
-    
+    //printf("%d\n",cb_min);
+
+
+
     if(cb_min>cb_min_temp){
       cb_min=cb_min_temp;
       // printf("seed=%d  CB_total=%d\n",q,cb_min_temp);
     }
-    
-    
+
+
   }
-  
+
 
   end=time(NULL);
   // printf("minimum CB=%d\n",cb_min);
@@ -454,7 +454,7 @@ vvvvv	return -1;
   printf("\n<backup capacity>\n");
   for(i=0;i<N;i++){
     for(j=0;j<N;j++){
-      if(i!=j){
+      if(p_link[i][j]!=0){
 	printf("(%d,%d)・・・",i,j);
 	printf("%d　",backup2[i][j]);
       }
@@ -462,6 +462,19 @@ vvvvv	return -1;
       }
     }
   */
+  for(i=0;i<N;i++){
+    for(j=0;j<N;j++){
+      printf("%d :(%d,%d)---",p_link[i][j],i,j);
+      for(a=0;a<N;a++){
+        if(PATH[i][j][a]!=INF){
+          printf("%d",PATH[i][j][a]);
+        }
+      }
+      printf("\n");
+    }
+  }
+  printf("\n");
+
   printf("%d,%f,%f,%d,%d\n",model,PROBABILITY,EPSILON,cb_min,end-start);
   return 0;
   }
